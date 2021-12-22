@@ -1,10 +1,11 @@
 import rest_calls
 import json
 import time
+import passwords
 
 
 token = ""
-for x in range(4):
+for x in range(5):
     # returns KeyError: 'experimentId' if no experiment is in Queue
     task = rest_calls.getexp_fromqueue(
         token)
@@ -12,7 +13,7 @@ for x in range(4):
     # if "detail":"Invalid token." or {"detail":"Invalid token header. No credentials provided."}
     if "detail" in task:
         print("invalid credentials, generate new")
-        credentials = rest_calls.login("zilk.felix@gmail.com", "123")
+        credentials = rest_calls.login(passwords.email, passwords.password)
         # print(credentials)
         token = credentials["token"]
         print("new token for you")
@@ -21,7 +22,8 @@ for x in range(4):
         print("this time credentials are valid")
         # print(task["experimentId"])
         if "experimentId" in task:
-            print("there is also an experiment in the queue")
+            print("there is also a new experiment in the queue")
+            print(task)
             experimentId = task["experimentId"]
             rest_calls.poststatus_running(
                 token, experimentId)
