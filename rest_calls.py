@@ -25,21 +25,25 @@ def login(useremail, userpassword):
 
 def getexp_fromqueue(token):
     """ """
+    auth_token = "Token " + token
     url = "http://127.0.0.1:8000/api/experiments/queue"
 
     payload = {}
     headers = {
-        'Authorization': token,
-        'Cookie': 'csrftoken=a6IwyqS4I5vjwcNAT5Tm70PuiK7AFjcDVPHbyZy3I189V7eX5iK2m0AwJQoYyVUb; sessionid=5g4v77efjv0r99nziiourrzqocruyasl'
+        'Authorization': auth_token,
+        # 'Cookie': 'csrftoken=a6IwyqS4I5vjwcNAT5Tm70PuiK7AFjcDVPHbyZy3I189V7eX5iK2m0AwJQoYyVUb; sessionid=5g4v77efjv0r99nziiourrzqocruyasl'
     }
 
     response = requests.request("GET", url, headers=headers, data=payload)
+    # returns KeyError: 'experimentId' if no experiment is in Queue
 
-    print(response.text)
+    return response.json()
+    # print(response.text)
 
 
 def poststatus_running(token, experimentId):
     """ """
+    auth_token = "Token " + token
     url = f"http://127.0.0.1:8000/api/experiments/{experimentId}"
 
     payload = {'status': 'RUNNING'}
@@ -47,20 +51,21 @@ def poststatus_running(token, experimentId):
 
     ]
     headers = {
-        'Authorization': token,
+        'Authorization': auth_token,
         'Cookie': 'csrftoken=a6IwyqS4I5vjwcNAT5Tm70PuiK7AFjcDVPHbyZy3I189V7eX5iK2m0AwJQoYyVUb; sessionid=5g4v77efjv0r99nziiourrzqocruyasl'
     }
 
     response = requests.request(
         "PATCH", url, headers=headers, data=payload, files=files)
 
-    print(response.text)
+    # print(response.text)
 
 
 # post_running()
 
 def post_result(token, result):
     """ """
+    auth_token = "Token " + token
     url = "http://127.0.0.1:8000/api/results"
     payload = result
     # payload = json.dumps({
@@ -89,7 +94,7 @@ def post_result(token, result):
     #     }
     # })
     headers = {
-        'Authorization': token,
+        'Authorization': auth_token,
         'Content-Type': 'application/json',
         'Cookie': 'csrftoken=a6IwyqS4I5vjwcNAT5Tm70PuiK7AFjcDVPHbyZy3I189V7eX5iK2m0AwJQoYyVUb; sessionid=5g4v77efjv0r99nziiourrzqocruyasl'
     }
@@ -102,6 +107,7 @@ def post_result(token, result):
 # post_result()
 def poststatus_done(token, experimentId):
     """ """
+    auth_token = "Token " + token
     url = f"http://127.0.0.1:8000/api/experiments/{experimentId}"
 
     payload = {'status': 'DONE'}
@@ -109,7 +115,7 @@ def poststatus_done(token, experimentId):
 
     ]
     headers = {
-        'Authorization': token,
+        'Authorization': auth_token,
         'Cookie': 'csrftoken=a6IwyqS4I5vjwcNAT5Tm70PuiK7AFjcDVPHbyZy3I189V7eX5iK2m0AwJQoYyVUb; sessionid=5g4v77efjv0r99nziiourrzqocruyasl'
     }
 
