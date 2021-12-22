@@ -6,30 +6,25 @@ import passwords
 
 token = ""
 for x in range(5):
+    # returns {"detail":"Invalid token."} or {"detail":"Invalid token header. No credentials provided."} if no or wrong credentials
     # returns KeyError: 'experimentId' if no experiment is in Queue
     task = rest_calls.getexp_fromqueue(
         token)
     # print(task)
-    # if "detail":"Invalid token." or {"detail":"Invalid token header. No credentials provided."}
-    if "detail" in task:
-        print("invalid credentials, generate new")
-        credentials = rest_calls.login(passwords.email, passwords.password)
-        # print(credentials)
-        token = credentials["token"]
-        print("new token for you")
-        # print(token)
-    else:
-        print("this time credentials are valid")
+
+    if "detail" not in task:
+        print("Credentials are valid")
         # print(task["experimentId"])
         if "experimentId" in task:
-            print("there is also a new experiment in the queue")
+            print("There is also a new experiment in the queue")
             print(task)
             experimentId = task["experimentId"]
+            print("Running")
             rest_calls.poststatus_running(
                 token, experimentId)
 
             # Here: execute task
-
+            print("Experiment performed")
             # Here: retrieve result
 
             result = json.dumps({
@@ -58,14 +53,23 @@ for x in range(5):
                     }
                 }
             })
-            print("results determined")
+            print("Results determined")
             rest_calls.post_result(
                 token, result)
-            print("results posted")
+            print("Results posted to API")
             rest_calls.poststatus_done(
                 token, experimentId)
-            print("status updated")
+            print("Status of " + experimentId + " updated")
 
         else:
-            print("empty queue")
+            print("Empty queue")
+    elif "detail" in task:
+        print("Invalid credentials, generating new ...")
+        credentials = rest_calls.login(passwords.email, passwords.password)
+        # print(credentials)
+        token = credentials["token"]
+        print("New token for you!")
+        # print(token)
+    else:
+        pass
     time.sleep(5)
