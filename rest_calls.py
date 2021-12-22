@@ -17,8 +17,8 @@ def login(useremail, userpassword):
 
     response = requests.request(
         "POST", url, headers=headers, data=payload, files=files)
-
-    print(response.text)
+    return response.json()
+    # print(response.text)
 
 
 #login("zilk.felix@gmail.com", "123")
